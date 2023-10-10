@@ -1,0 +1,7 @@
+*.pdf
+/code
+/lecture slides
+*.docx
+*.aseprite
+*.tmp
+/github
