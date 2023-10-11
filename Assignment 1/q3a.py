@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 a = 1.5
 x_0 = 0.8
-k = 500
+k = 50
 
 def T(x):
     if x < 0.5:
