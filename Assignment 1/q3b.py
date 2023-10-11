@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Initial Conditions
 a = 1.5
 x_0 = 0.8
 k = 100
 
+# Tent map function of period 2
 def T2(x):
     if x < 1 / (2*a):
         return a**2 * x
@@ -24,6 +26,7 @@ orbits = np.zeros((2*k+1, 2))
 orbits[0] = [x_0, 0]
 x_k = [x_0]
 
+# calculate x_k+1 and orbit points
 for i in range(k):
     x_k.append(T2(x_k[-1]))
     orbits[2*i+1] = [x_k[i], x_k[i+1]]

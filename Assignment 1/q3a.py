@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Initial conditions
 a = 1.5
 x_0 = 0.8
 k = 50
 
+# Tent map function
 def T(x):
     if x < 0.5:
         return a * x
@@ -16,10 +18,11 @@ y = x
 
 t = [T(i) for i in x]
 
-orbits = np.zeros((2*k+1, 2))
-orbits[0] = [x_0, 0]
-x_k = [0.8]
+orbits = np.zeros((2*k+1, 2))       # holds points for the orbit line
+orbits[0] = [x_0, 0]                # set ICs
+x_k = [x_0]                         # x_k holds all x_k
 
+# calculate x_k+1 and orbit points
 for i in range(k):
     x_k.append(T(x_k[-1]))
     orbits[2*i+1] = [x_k[i], x_k[i+1]]
