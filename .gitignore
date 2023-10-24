@@ -3,5 +3,9 @@
 /lecture slides
 *.docx
 *.aseprite
+*.mp4
 *.tmp
 /github
+/seminar
+/Assignment 1/frames
+/term project
