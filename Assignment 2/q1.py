@@ -1,4 +1,7 @@
+# Vlad Pac
+
 import numpy as np
+from matplotlib import cm
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
@@ -14,7 +17,7 @@ X, Y = np.meshgrid(X, Y)
 Z = V(X, Y)
 
 # Surface plot for V(x, y)
-surf = ax.plot_surface(X, Y, Z)
+surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm)
 plt.show()
 
 # Contour Map
