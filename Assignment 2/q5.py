@@ -9,7 +9,7 @@ b = 0.2
 c = 6.3
 
 # Set the initial conditions
-x_0 = 1.01
+x_0 = 1
 y_0 = 1
 z_0 = 1
 
@@ -55,4 +55,15 @@ ax.plot(t, x)
 ax.set_title('Time series (x0, y0, z0)=(%.2f, %.2f, %.2f)' %(x_0, y_0, z_0))
 ax.set_xlabel('t')
 ax.set_ylabel('x')
+plt.show()
+
+# Plot the Poincare Map
+
+r = np.sqrt(x**2 + y**2)
+
+fig, ax = plt.subplots()
+ax.plot(r, z)
+ax.set_title('Poincare Map (x0, y0, z0)=(%.2f, %.2f, %.2f)' %(x_0, y_0, z_0))
+ax.set_xlabel('r')
+ax.set_ylabel('z')
 plt.show()
