@@ -17,12 +17,12 @@ C = C_0 / Omega_0**2
 
 # Initial Conditions
 x_0 = 0.5
-y_0 = 0.8
-z_0 = 0.5
+y_0 = 0.5
+z_0 = 0.8
 
 # This is of dimensionless form
 time = 3 * (2*np.pi)
-dt = 0.01
+dt = 0.001
 num_points = (int) (time / dt)
 
 x1 = np.zeros(num_points)
@@ -49,7 +49,7 @@ uz[0] = 0
 
 omega = np.sqrt(C-2)
 # print(omega)
-k = 1.4
+k = 0.1
 
 def V1(y1, y2):
     return omega**2*y1**2 + y2**2 - omega**2
@@ -92,4 +92,11 @@ axs[2].set_ylabel('Uz')
 axs[2].set_aspect('auto')
 
 fig.tight_layout()
+plt.show()
+
+ax = plt.figure().add_subplot(projection='3d')
+ax.plot(x1, y1, z1)
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 plt.show()

@@ -36,6 +36,17 @@ for i in range(rows):
         u[i, j] = x2
         v[i, j] = (2*C+1)*x1+ux_bar
 
-plt.streamplot(X1_bar, X2_bar, u, v)
+fig, ax = plt.subplots()
+
+ax.streamplot(X1_bar, X2_bar, u, v)
+
+minor_ticks = np.arange(-.25, .25, 0.05)
+major_ticks = np.arange(-.4, .4, .1)
+
+ax.set_xticks(minor_ticks)
+ax.set_yticks(major_ticks)
+
+ax.set_xlabel(r'$\bar{X}_1$')
+ax.set_ylabel(r'$\bar{X}_2$')
 plt.grid()
 plt.show()

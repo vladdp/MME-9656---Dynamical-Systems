@@ -52,6 +52,8 @@ seed_points = np.array([[3, 2, 1, 0, -1],
 # plt.quiver(X, Y, u, v)
 # plt.streamplot(X, Y, u, v, density=[0.2, 0.2], broken_streamlines=False)
 plt.streamplot(X, Y, u, v, start_points=seed_points.T, broken_streamlines=False)
+plt.xlabel('X')
+plt.ylabel('Y')
 plt.grid()
 plt.show()
 
