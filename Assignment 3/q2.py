@@ -1,6 +1,5 @@
 """
-Solution to MME 9656 Assigment 3 Question 1,
-Balancing an Inverted Pendulum
+Solution to MME 9656 Assigment 3 Question 2
 
 Author: Vlad Pac
 Due Date: November 29, 2023
