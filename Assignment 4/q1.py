@@ -73,7 +73,7 @@ test_size = 0.1
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=1)
 
 clf = MLPClassifier(solver='lbfgs', activation='tanh', 
-                    hidden_layer_sizes=20, max_iter=200, random_state=1)
+                    hidden_layer_sizes=10, max_iter=200, random_state=1)
 
 clf.fit(X_train, y_train)
 
@@ -84,10 +84,6 @@ y_train_pred = clf.predict(X_train)
 y_test_pred = clf.predict(X_test)
 
 disp = DecisionBoundaryDisplay.from_estimator(clf, X_train, response_method="predict", alpha=0.3)
-
-# print(pred)
-
-# plt.scatter(X[:, 0], X[:, 1], c=y)
 
 accuracy = accuracy_score(y_test, y_test_pred)
 print('The accuracy of the model is: ', accuracy*100, '%')
