@@ -19,8 +19,8 @@ I_sp = 3300                     # specific impulse
 eta = 0.65                      # engine efficiency
 T2W = 3.4e-5                    # thrust to weight ratio
 m_dot = -(2*eta*P)/(g*I_sp)**2  # mass rate of change
+# print(m_dot)
 
-print(m_dot)
 
 def rot_x(pq, theta):
     R_x = [ [1, 0, 0],
@@ -125,17 +125,6 @@ c_e[0] = [sin(gamma[0]+phi_e_star[0]), cos(gamma[0]+phi_e_star[0]), 0]
 # print(c_a[0])
 # print(c_e[0])
 
-phi[0] = phi_e_star[0]
-alpha[0] = gamma[0] + phi[0]
-
-c[0] = [sin(alpha[0]), cos(alpha[0]), 0]
-
-theta[0] = omega[0] + nu[0]
-beta_star[0] = (np.pi/2)*cos(theta[0])
-
-a_T[0] = T2W * m[0]
-# print(a_T)
-
 # For t < 120 days
 K_e0_a = 0
 K_e1_a = -1.5e-3
@@ -156,14 +145,29 @@ G_a = 1
 G_e[0] = K_e0_a + K_e1_a * t[0] + K_e2_a * t[0]**2
 G_i[0] = K_i0_a + K_i1_a * t[0]
 
+# phi[0] = G_e[0] * phi_e_star[0]
+alpha[0] = gamma[0] + phi[0]
+
+c[0] = [sin(alpha[0]), cos(alpha[0]), 0]
+
+theta[0] = omega[0] + nu[0]
+beta_star[0] = (np.pi/2)*cos(theta[0])
+
+a_T[0] = T2W * m[0]
+# a_T[0] = T2W * m[0] * g
+# print(a_T)
+
 beta[0] = G_i[0] * cos(theta[0])
 # print(beta[0])
 
 u_RTN[0] = [sin(alpha[0])*cos(beta[0]), cos(alpha[0])*cos(beta[0]), sin(beta[0])]
 
-u[0] = rot_z(u_RTN[0], omega[0])
-u[0] = rot_x(u[0], i[0])
-u[0] = rot_z(u[0], loan[0])
+# u[0] = rot_z(u_RTN[0], omega[0])
+# u[0] = rot_x(u[0], i[0])
+# u[0] = rot_z(u[0], loan[0])
+u[0] = rot_x(u_RTN[0], i[0])
+u[0] = rot_z(u_RTN[0], theta[0])
+
 # print(u[0])
 
 # acc[0] = -((mu*pos[0])/np.linalg.norm(pos[0])**3) + a_T[0]*u[0]
@@ -219,7 +223,7 @@ for k in range(1, test_time):
 
     phi_e_star[k] = arctan((r[k]*sin(nu[k]))/(2*a[k]*(e[k]+cos(nu[k]))))
     beta[k] = G_i[k] * cos(theta[k])
-    phi[k] = G_e[k] * phi_e_star[k]
+    # phi[k] = G_e[k] * phi_e_star[k]
 
     r_p = r[k]*cos(nu[k])
     v_p = np.sqrt(mu/p[k]) * (-sin(nu[k]))
@@ -238,6 +242,7 @@ for k in range(1, test_time):
 
     m[k] = m[k-1] + m_dot * dt
     a_T[k] = T2W * m[k]
+    # a_T[k] = T2W * m[k] * g
 
     acc[k] = -((mu*pos[k])/norm(pos[k])**3) + a_T[k]*u[k] * dt
 
@@ -249,14 +254,14 @@ for k in range(1, test_time):
     if k % 100 == 0:
         print(k)
 
-for k in range(0, 10):
+# for k in range(0, 10):
     # print("Pos: ", pos[k])
     # print("Vel: ", vel[k])
     # print("Acc: ", acc[k])
     # print("True Anomaly: ", nu[k])
     # print(r[k])
     # print(norm(e_vec[k]))
-    pass
+    # pass
 
 # e_test = np.zeros(test_time)
 # for k in range(0, test_time):
@@ -265,86 +270,133 @@ for k in range(0, 10):
 # plt.plot(e_test)
 # plt.show()
 
+# Plot 3D Trajectory
+pos = pos / 1000
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 ax.plot(pos[:test_time, 0], pos[:test_time, 1], pos[:test_time, 2])
+ax.set_xlabel('X (km)')
+ax.set_ylabel('Y (km)')
+ax.set_zlabel('Z (km)')
+ax.set_xlim(-10000, 10000)
+ax.set_ylim(-10000, 10000)
+ax.set_zlim(-10000, 10000)
 plt.show()
 
-fig, ax = plt.subplots(2, 3)
-ax[0, 0].plot(t[:test_time], a[:test_time])
-ax[0, 0].set_title('a')
-ax[0, 1].plot(t[:test_time], e[:test_time])
-ax[0, 1].set_title('e')
-ax[0, 2].plot(t[:test_time], np.rad2deg(i[:test_time]))
-ax[0, 2].set_title('i')
-ax[1, 0].plot(t[:test_time], loan[:test_time])
-ax[1, 0].set_title('loan')
-ax[1, 1].plot(t[:test_time], omega[:test_time])
-ax[1, 1].set_title('omega')
-ax[1, 2].plot(t[:test_time], nu[:test_time])
-ax[1, 2].set_title('nu')
-plt.tight_layout()
-plt.show()
-
-fig, ax = plt.subplots(1, 3)
-ax[0].plot(t[:test_time], pos[:test_time, 0])
-ax[0].plot(t[:test_time], pos[:test_time, 1])
-ax[0].plot(t[:test_time], pos[:test_time, 2])
-ax[0].set_title('pos')
-ax[1].plot(t[:test_time], vel[:test_time, 0])
-ax[1].plot(t[:test_time], vel[:test_time, 1])
-ax[1].plot(t[:test_time], vel[:test_time, 2])
-ax[1].set_title('vel')
-ax[2].plot(t[:test_time], acc[:test_time, 0])
-ax[2].plot(t[:test_time], acc[:test_time, 1])
-ax[2].plot(t[:test_time], acc[:test_time, 2])
-ax[2].set_title('acc')
-plt.show()
-
-fig, ax = plt.subplots(1, 3)
-ax[0].plot(t[:test_time], da[:test_time])
-ax[0].set_title('da')
-ax[1].plot(t[:test_time], de[:test_time])
-ax[1].set_title('de')
-ax[2].plot(t[:test_time], di[:test_time])
-ax[2].set_title('di')
-plt.show()
-
-fig, ax = plt.subplots(2, 3)
-ax[0, 0].plot(t[:test_time], theta[:test_time])
-ax[0, 0].set_title('theta')
-ax[0, 1].plot(t[:test_time], phi_e_star[:test_time])
-ax[0, 1].set_title('phi_e_star')
-ax[0, 2].plot(t[:test_time], beta[:test_time])
-ax[0, 2].set_title('beta')
-ax[1, 0].plot(t[:test_time], phi[:test_time])
-ax[1, 0].set_title('phi')
-ax[1, 1].plot(t[:test_time], gamma[:test_time])
-ax[1, 1].set_title('gamma')
-ax[1, 2].plot(t[:test_time], alpha[:test_time])
-ax[1, 2].set_title('alpha')
-plt.show()
-
-fig, ax = plt.subplots(2, 2)
-ax[0, 0].plot(t[:test_time], G_e[:test_time])
-ax[0, 0].set_title('G_e')
-ax[0, 1].plot(t[:test_time], G_i[:test_time])
-ax[0, 1].set_title('G_i')
-ax[1, 0].plot(t[:test_time], m[:test_time])
-ax[1, 0].set_title('m')
-ax[1, 1].plot(t[:test_time], a_T[:test_time])
-ax[1, 1].set_title('a_T')
-plt.show()
-
+# Plot control vector
 fig, ax = plt.subplots(1, 2)
 ax[0].plot(u[:test_time, 0], label='u_x')
 ax[0].plot(u[:test_time, 1], label='u_y')
 ax[0].plot(u[:test_time, 2], label='u_z')
+ax[0].set_xlabel('t (s)')
+ax[0].set_ylabel('u')
+ax[0].set_title('Unit control vector in ECI')
+ax[0].set_box_aspect(1)
 ax[0].legend()
 ax[1].plot(u_RTN[:test_time, 0], label='u_RTN_x')
 ax[1].plot(u_RTN[:test_time, 1], label='u_RTN_y')
 ax[1].plot(u_RTN[:test_time, 2], label='u_RTN_z')
+ax[1].set_xlabel('t (s)')
+ax[1].set_ylabel('u')
+ax[1].set_title('Unit control vector in RTN')
+ax[1].set_box_aspect(1)
 ax[1].legend()
+fig.tight_layout()
 plt.show()
+
+# Plot e & i vs a
+a = a / 1000
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+ax1.plot(a[:test_time], e[:test_time], color='blue', label='Eccentricity')
+ax2.plot(a[:test_time], np.rad2deg(i[:test_time]), color='red', label='Inclination')
+ax1.set_xlabel('Semi-major axis (km)')
+ax1.set_ylabel('Eccentricity', color='blue')
+# ax1.set_ylim(0, 0.14)
+ax2.set_ylabel('Inclination', color='red')
+# ax2.set_ylim(0, 30)
+fig.tight_layout()
+plt.show()
+
+# ax1.plot(a[:test_time], e[:test_time], color='blue', label='Eccentricity')
+# ax2.plot(a[:test_time], np.rad2deg(i[:test_time]), color='red', label='Inclination')
+# plt.show()
+
+# fig, ax = plt.subplots(2, 3)
+# ax[0, 0].plot(t[:test_time], a[:test_time])
+# ax[0, 0].set_title('a')
+# ax[0, 1].plot(t[:test_time], e[:test_time])
+# ax[0, 1].set_title('e')
+# ax[0, 2].plot(t[:test_time], np.rad2deg(i[:test_time]))
+# ax[0, 2].set_title('i')
+# ax[1, 0].plot(t[:test_time], loan[:test_time])
+# ax[1, 0].set_title('loan')
+# ax[1, 1].plot(t[:test_time], omega[:test_time])
+# ax[1, 1].set_title('omega')
+# ax[1, 2].plot(t[:test_time], nu[:test_time])
+# ax[1, 2].set_title('nu')
+# plt.tight_layout()
+# plt.show()
+
+# fig, ax = plt.subplots(1, 3)
+# ax[0].plot(t[:test_time], pos[:test_time, 0])
+# ax[0].plot(t[:test_time], pos[:test_time, 1])
+# ax[0].plot(t[:test_time], pos[:test_time, 2])
+# ax[0].set_title('pos')
+# ax[1].plot(t[:test_time], vel[:test_time, 0])
+# ax[1].plot(t[:test_time], vel[:test_time, 1])
+# ax[1].plot(t[:test_time], vel[:test_time, 2])
+# ax[1].set_title('vel')
+# ax[2].plot(t[:test_time], acc[:test_time, 0])
+# ax[2].plot(t[:test_time], acc[:test_time, 1])
+# ax[2].plot(t[:test_time], acc[:test_time, 2])
+# ax[2].set_title('acc')
+# plt.show()
+
+# fig, ax = plt.subplots(1, 3)
+# ax[0].plot(t[:test_time], da[:test_time])
+# ax[0].set_title('da')
+# ax[1].plot(t[:test_time], de[:test_time])
+# ax[1].set_title('de')
+# ax[2].plot(t[:test_time], di[:test_time])
+# ax[2].set_title('di')
+# plt.show()
+
+# fig, ax = plt.subplots(2, 3)
+# ax[0, 0].plot(t[:test_time], theta[:test_time])
+# ax[0, 0].set_title('theta')
+# ax[0, 1].plot(t[:test_time], phi_e_star[:test_time])
+# ax[0, 1].set_title('phi_e_star')
+# ax[0, 2].plot(t[:test_time], beta[:test_time])
+# ax[0, 2].set_title('beta')
+# ax[1, 0].plot(t[:test_time], phi[:test_time])
+# ax[1, 0].set_title('phi')
+# ax[1, 1].plot(t[:test_time], gamma[:test_time])
+# ax[1, 1].set_title('gamma')
+# ax[1, 2].plot(t[:test_time], alpha[:test_time])
+# ax[1, 2].set_title('alpha')
+# plt.show()
+
+# fig, ax = plt.subplots(2, 2)
+# ax[0, 0].plot(t[:test_time], G_e[:test_time])
+# ax[0, 0].set_title('G_e')
+# ax[0, 1].plot(t[:test_time], G_i[:test_time])
+# ax[0, 1].set_title('G_i')
+# ax[1, 0].plot(t[:test_time], m[:test_time])
+# ax[1, 0].set_title('m')
+# ax[1, 1].plot(t[:test_time], a_T[:test_time])
+# ax[1, 1].set_title('a_T')
+# plt.show()
+
+# fig, ax = plt.subplots(1, 2)
+# ax[0].plot(u[:test_time, 0], label='u_x')
+# ax[0].plot(u[:test_time, 1], label='u_y')
+# ax[0].plot(u[:test_time, 2], label='u_z')
+# ax[0].legend()
+# ax[1].plot(u_RTN[:test_time, 0], label='u_RTN_x')
+# ax[1].plot(u_RTN[:test_time, 1], label='u_RTN_y')
+# ax[1].plot(u_RTN[:test_time, 2], label='u_RTN_z')
+# ax[1].legend()
+# plt.show()
 
 # fig, ax1 = plt.subplots()
 # ax2 = ax1.twinx()
