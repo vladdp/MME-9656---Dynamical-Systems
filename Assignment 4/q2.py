@@ -42,6 +42,7 @@ random_i = np.arange(N)
 for k in range(N):
     print(k)
     np.random.shuffle(random_i)
+    print(random_i)
     x_prev = x_p.copy()
 
     for i in range(N):

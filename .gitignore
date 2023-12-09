@@ -10,3 +10,5 @@
 *.djvu
 /github
 /Assignment 1/frames
+*.drawio
+*.bkp

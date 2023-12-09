@@ -22,14 +22,13 @@ print(device)
 sim_time = 100
 dt = 0.1
 
+# read only the x values in the first column
 df = pd.read_csv('Assignment 4\duffing_100s.csv', header=None, usecols=[0])
 x_values = df.values.astype('float32')
 # print(df.head().to_string())
 
 test_size = 0.2
 train, test = train_test_split(x_values, test_size=test_size, shuffle=False)
-# train, test = df[:8000], df[8000:]
-# print(type(train))
 
 # t = np.arange(0, sim_time, dt)
 # t_train = int((1-test_size)*len(t))
@@ -116,7 +115,9 @@ with torch.no_grad():
     test_plot = np.ones_like(x_values) * np.nan
     test_plot[len(train)+lookback:len(x_values)] = model(X_test).detach().cpu().numpy()[:, -1, :]
 
-plt.plot(x_values, c='b')
-plt.plot(train_plot, c='r')
-plt.plot(test_plot, c='g')
+plt.plot(x_values, c='b', label='Actual Displacement')
+plt.plot(train_plot, c='r', label='Predicted Train Data')
+plt.plot(test_plot, c='g', label='Predicted Test Data')
+plt.xlabel('Time (s)')
+plt.ylabel('Displacement (m)')
 plt.show()
