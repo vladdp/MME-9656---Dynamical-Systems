@@ -21,7 +21,7 @@ T2W = 3.4e-5                    # thrust to weight ratio
 m_dot = -(2*eta*P)/(g*I_sp)**2  # mass rate of change
 # print(m_dot)
 
-
+# Rotation matrix functions
 def rot_x(pq, theta):
     R_x = [ [1, 0, 0],
             [0, cos(theta), -sin(theta)],
@@ -141,12 +141,14 @@ K_i1_b = -5.2e-3
 
 t = np.arange(0, sim_time-dt, dt)
 
+# Weighting functions
 G_a = 1
 G_e[0] = K_e0_a + K_e1_a * t[0] + K_e2_a * t[0]**2
 G_i[0] = K_i0_a + K_i1_a * t[0]
 
 # phi[0] = G_e[0] * phi_e_star[0]
 alpha[0] = gamma[0] + phi[0]
+
 
 c[0] = [sin(alpha[0]), cos(alpha[0]), 0]
 
@@ -186,6 +188,7 @@ di[0] = (a_T[0]*r[0]/norm(h[0]))*cos(theta[0])*sin(beta[0])
 t_120 = 60*60*24*120 / dt
 # print(t_120, len(t))
 
+# The duration of the simulation
 test_time = 6000
 
 for k in range(1, test_time):

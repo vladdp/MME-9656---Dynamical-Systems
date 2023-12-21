@@ -117,17 +117,20 @@ with torch.no_grad():
     test_plot = np.ones_like(x_values) * np.nan
     test_plot[len(train)+lookback:len(x_values)] = model(X_test).detach().cpu().numpy()[:, -1, :]
 
-plt.plot(x_values[:, 0], c='cornflowerblue', label='Actual Disp')
-plt.plot(x_values[:, 1], c='blue', label='Actual Vel')
-plt.plot(x_values[:, 2], c='midnightblue', label='Actual Acc')
-plt.plot(train_plot[:, 0], c='coral', linestyle='dashed', label='Predicted Train Disp')
-plt.plot(train_plot[:, 1], c='red', linestyle='dashed', label='Predicted Train Vel')
-plt.plot(train_plot[:, 2], c='maroon', linestyle='dashed', label='Predicted Train Acc')
-plt.plot(test_plot[:, 0], c='hotpink', linestyle='dashed', label='Predicted Test Disp')
-plt.plot(test_plot[:, 1], c='magenta', linestyle='dashed', label='Predicted Test Vel')
-plt.plot(test_plot[:, 2], c='crimson', linestyle='dashed', label='Predicted Test Acc')
+
+t = np.arange(0, sim_time, dt)
+
+plt.plot(t, x_values[:, 0], c='cornflowerblue', label='Actual Disp')
+plt.plot(t, x_values[:, 1], c='blue', label='Actual Vel')
+plt.plot(t, x_values[:, 2], c='midnightblue', label='Actual Acc')
+plt.plot(t[:len(train_plot)], train_plot[:, 0], c='coral', linestyle='dashed', label='Predicted Train Disp')
+plt.plot(t[:len(train_plot)], train_plot[:, 1], c='red', linestyle='dashed', label='Predicted Train Vel')
+plt.plot(t[:len(train_plot)], train_plot[:, 2], c='maroon', linestyle='dashed', label='Predicted Train Acc')
+plt.plot(t[-len(test_plot):], test_plot[:, 0], c='hotpink', linestyle='dashed', label='Predicted Test Disp')
+plt.plot(t[-len(test_plot):], test_plot[:, 1], c='magenta', linestyle='dashed', label='Predicted Test Vel')
+plt.plot(t[-len(test_plot):], test_plot[:, 2], c='crimson', linestyle='dashed', label='Predicted Test Acc')
 plt.xlabel('Time (s)')
 # plt.ylabel('Displacement (m)')
-plt.axvline(x=800, color='black')
+plt.axvline(x=80, color='black')
 plt.legend()
 plt.show()
